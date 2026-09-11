@@ -1,0 +1,334 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===================================================
+   Base
+=================================================== */
+/* ===================================================
+   SPA ページ切替
+=================================================== */
+.spa-page {
+  display: none;
+}
+.spa-page.page-active {
+  display: block;
+}
+
+/* ページ遷移アニメーション */
+@keyframes page-enter-anim {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.spa-page.page-enter {
+  animation: page-enter-anim 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@layer base {
+  html {
+    scroll-behavior: auto;
+  }
+  body {
+    @apply bg-neutral-950 text-neutral-200;
+  }
+  ::selection {
+    @apply bg-forest-700 text-white;
+  }
+}
+
+/* ===================================================
+   Components
+=================================================== */
+@layer components {
+  /* --- ナビゲーション --- */
+  #navbar {
+    @apply bg-transparent;
+  }
+  #navbar.scrolled {
+    @apply bg-neutral-950/90 backdrop-blur-md border-b border-neutral-800;
+  }
+  .cta-nav {
+    @apply text-forest-400 border border-forest-700 px-4 py-1 hover:bg-forest-700/20 transition-colors;
+  }
+
+  /* --- セクションタイトル --- */
+  .section-title {
+    @apply font-serif text-3xl text-white tracking-widest text-center;
+  }
+
+  /* --- ボタン --- */
+  .btn-primary {
+    @apply bg-forest-700 hover:bg-forest-600 text-white transition-colors inline-block text-center;
+  }
+  .btn-outline {
+    @apply border border-neutral-600 hover:border-neutral-400 text-neutral-300 hover:text-white transition-colors inline-block text-center;
+  }
+
+  /* --- 画像プレースホルダー --- */
+  .img-placeholder {
+    @apply bg-neutral-800 border border-neutral-700 flex items-center justify-center;
+  }
+  .img-placeholder::after {
+    content: "IMAGE";
+    @apply text-neutral-700 text-xs tracking-widest;
+  }
+
+  /* --- ルームカード --- */
+  .room-card {
+    @apply border border-neutral-800 p-4 hover:border-neutral-700 transition-colors;
+  }
+
+  /* --- 施設カード --- */
+  .facility-card {
+    @apply border border-neutral-800 p-6 hover:border-neutral-700 transition-colors;
+  }
+
+  /* --- アクティビティカード --- */
+  .activity-card {
+    @apply border border-neutral-800 p-6 hover:border-neutral-700 transition-colors;
+  }
+
+  /* --- 詳細ボタン --- */
+  .detail-btn {
+    @apply text-xs text-forest-400 border border-forest-900 px-4 py-2
+           tracking-wider hover:bg-forest-900/40 hover:border-forest-700
+           hover:text-forest-300 transition-all duration-300;
+  }
+  .detail-btn .detail-btn-arrow {
+    @apply inline-block transition-transform duration-300;
+  }
+  .detail-btn:hover .detail-btn-arrow {
+    @apply translate-x-1;
+  }
+
+  /* --- アメニティ --- */
+  .amenity-item {
+    @apply p-4 border border-neutral-800;
+  }
+  .amenity-icon {
+    @apply text-2xl;
+  }
+
+  /* --- パンくずリスト --- */
+  .breadcrumb {
+    @apply flex items-center gap-2 text-xs text-neutral-600 mb-10;
+  }
+  .breadcrumb a {
+    @apply hover:text-neutral-300 transition-colors;
+  }
+  .breadcrumb-sep {
+    @apply text-neutral-800;
+  }
+  .breadcrumb-current {
+    @apply text-neutral-400;
+  }
+
+  /* --- フォーム --- */
+  .form-label {
+    @apply block text-xs tracking-widest text-neutral-500 mb-2;
+  }
+  .form-input {
+    @apply w-full bg-neutral-800 border border-neutral-700 text-neutral-100 px-4 py-3 text-sm focus:outline-none focus:border-neutral-500 transition-colors rounded-none;
+  }
+  /* touched クラスが付いた後にのみバリデーションエラーを表示 */
+  .form-input.touched:invalid {
+    @apply border-red-800;
+  }
+
+  /* --- お知らせバー --- */
+  #site-notice {
+    @apply hidden text-center px-4 py-2 text-xs tracking-wide;
+    @apply bg-neutral-900 border-b border-neutral-800 text-neutral-500;
+  }
+  #site-notice.visible {
+    @apply block;
+  }
+  /* エンディング後の緊急お知らせ */
+  #site-notice.ending {
+    @apply bg-red-950 border-b border-red-900 text-red-300;
+    animation: notice-pulse 3s ease-in-out infinite;
+  }
+  @keyframes notice-pulse {
+    0%,
+    100% {
+      opacity: 0.7;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  /* --- チャットアイコン エンディング後強調 --- */
+  #chat-toggle.ending-glow {
+    @apply border-red-700 bg-red-950;
+    animation: chat-glow 2s ease-in-out infinite;
+  }
+  #chat-toggle.ending-glow svg {
+    @apply text-red-400;
+  }
+  @keyframes chat-glow {
+    0%,
+    100% {
+      box-shadow: 0 0 6px 1px theme("colors.red.900");
+    }
+    50% {
+      box-shadow: 0 0 16px 4px theme("colors.red.700");
+    }
+  }
+
+  /* --- サブページ時のナビ --- */
+  body.subpage-active #nav-links {
+    @apply hidden;
+  }
+  body.subpage-active #mobile-menu-items {
+    @apply hidden;
+  }
+  /* サブページ下部ナビバー */
+  #subpage-bottom-nav {
+    @apply hidden;
+  }
+  body.subpage-active #subpage-bottom-nav {
+    @apply block;
+  }
+  /* サブページのコンテンツがボトムナビに隠れないようにする */
+  body.subpage-active .spa-page.page-active {
+    @apply pb-20;
+  }
+
+  /* --- FAQ --- */
+  .faq-item {
+    @apply border border-neutral-800;
+  }
+  .faq-question {
+    @apply w-full flex items-center justify-between px-6 py-4 text-sm text-neutral-300 text-left hover:text-white transition-colors;
+  }
+  .faq-answer {
+    @apply px-6 pb-4 text-sm text-neutral-500 leading-loose;
+  }
+  .faq-item.open .faq-icon {
+    @apply rotate-180;
+  }
+
+  /* --- 検索結果 --- */
+  #search-results .result-item {
+    @apply p-4 border border-neutral-800 hover:border-neutral-700 cursor-pointer transition-colors;
+  }
+  #search-results .result-item h4 {
+    @apply text-sm text-white mb-1;
+  }
+  #search-results .result-item p {
+    @apply text-xs text-neutral-500;
+  }
+  .search-no-result {
+    @apply text-xs text-neutral-600 text-center py-4;
+  }
+  /* --- サイトマップから検索欄へジャンプした際の強調表示 --- */
+  #site-search.search-flash {
+    animation: search-flash 1.4s ease-out;
+  }
+
+  /* --- チャット --- */
+  #chat-messages .msg-owner {
+    @apply text-neutral-300;
+  }
+  #chat-messages .msg-name {
+    @apply text-xs text-neutral-600 mb-1;
+  }
+  #chat-messages .msg-bubble {
+    @apply bg-neutral-800 px-3 py-2 text-xs text-neutral-300 leading-relaxed inline-block max-w-[90%];
+  }
+  #chat-messages .msg-user .msg-bubble {
+    @apply bg-forest-900 text-neutral-200;
+  }
+  #chat-messages .msg-user {
+    @apply text-right;
+  }
+
+  /* --- 記事モーダル --- */
+  #article-content h2 {
+    @apply font-serif text-xl text-white mb-4;
+  }
+  #article-content h3 {
+    @apply text-base text-neutral-300 mb-3 mt-6;
+  }
+  #article-content p {
+    @apply text-sm text-neutral-400 leading-loose mb-4;
+  }
+  #article-content .arg-redacted {
+    @apply bg-neutral-800 text-neutral-800 select-none;
+  }
+  #article-content .arg-redacted:hover {
+    @apply bg-transparent text-red-400;
+  }
+}
+
+/* ===================================================
+   Animations
+=================================================== */
+
+/* 検索欄ハイライト（サイトマップからのジャンプ時） */
+@keyframes search-flash {
+  0% {
+    box-shadow: 0 0 0 0 rgba(96, 165, 250, 0.6);
+    border-color: rgba(96, 165, 250, 0.8);
+  }
+  100% {
+    box-shadow: 0 0 0 10px rgba(96, 165, 250, 0);
+    border-color: rgba(115, 115, 115, 1);
+  }
+}
+
+/* グリッチテキスト */
+@keyframes glitch {
+  0% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 1px);
+  }
+  40% {
+    transform: translate(2px, -1px);
+  }
+  60% {
+    transform: translate(-1px, 0);
+  }
+  80% {
+    transform: translate(1px, 1px);
+  }
+  100% {
+    transform: translate(0);
+  }
+}
+.glitch {
+  animation: glitch 0.3s infinite;
+}
+
+/* フリッカー */
+@keyframes flicker {
+  0%,
+  95%,
+  100% {
+    opacity: 1;
+  }
+  96% {
+    opacity: 0.4;
+  }
+  97% {
+    opacity: 1;
+  }
+  98% {
+    opacity: 0.2;
+  }
+  99% {
+    opacity: 0.9;
+  }
+}
+.flicker {
+  animation: flicker 8s infinite;
+}
